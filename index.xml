@@ -6,55 +6,37 @@
     <description>Recent content on Chris Turner</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Tue, 01 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 23 Jul 2015 21:13:14 -0500</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Project 1</title>
-      <link>/project/project1/</link>
-      <pubDate>Tue, 01 Dec 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/project/project1/</guid>
-      <description> Test Project 1  </description>
-    </item>
-    
-    <item>
-      <title>Project 2</title>
-      <link>/project/project2/</link>
-      <pubDate>Tue, 01 Dec 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/project/project2/</guid>
-      <description> Test Project 2  </description>
-    </item>
-    
-    <item>
-      <title>Hello R Markdown</title>
-      <link>/post/2015/07/23/hello-r-markdown/</link>
+      <title>The best of both worlds (R and Python)</title>
+      <link>/post/2015/07/23/the-best-of-both-worlds-r-and-python/</link>
       <pubDate>Thu, 23 Jul 2015 21:13:14 -0500</pubDate>
       
-      <guid>/post/2015/07/23/hello-r-markdown/</guid>
-      <description>R Markdown This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
-You can embed an R code chunk like this:
-summary(cars) ## speed dist ## Min. : 4.0 Min. : 2.00 ## 1st Qu.:12.0 1st Qu.: 26.00 ## Median :15.0 Median : 36.00 ## Mean :15.4 Mean : 42.98 ## 3rd Qu.</description>
+      <guid>/post/2015/07/23/the-best-of-both-worlds-r-and-python/</guid>
+      <description>#Blog
+After developing an understanding of how to use R-studio in my Computational Biology course this semester, my peers and I had the opportunity of combining R with Python. Python is a well-known computing language, but can also be used effectively for data science purposes and computational biology.
+In this post, I will show how Python code can actually be used inside an R script after installing some packages.</description>
     </item>
     
     <item>
-      <title>Projects</title>
-      <link>/projects/</link>
+      <title>Project 1: Exploratory Data Analysis by Joaquin E. Moreno (JEM5638)</title>
+      <link>/project/project1/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/projects/</guid>
-      <description> Check out some of my coding projects below:
- Wrangling &amp;amp; Exploratory Data Analysis
- Modeling, Inference, Prediction
-  -- </description>
+      <guid>/project/project1/</guid>
+      <description>Packages used:
+library(tidyverse) library(fivethirtyeight) library(dplyr) library(pastecs) library(Hmisc) #Q0: Introduction and Data Sets
+data2019 &amp;lt;- read.csv(&amp;quot;Data2019.csv&amp;quot;, header = TRUE, quote = &amp;quot;\&amp;quot;&amp;quot;, stringsAsFactors = TRUE, strip.white = TRUE) data2018 &amp;lt;- read.csv(&amp;quot;Data2018.csv&amp;quot;, header = TRUE, quote = &amp;quot;\&amp;quot;&amp;quot;, stringsAsFactors = TRUE, strip.white = TRUE) For the purpose of this project, I used two data sets obtained from Kaggle(link below) which included statistics about Men’s NCAA Basketball tournament. I have always been a huge fan of college basketball and thought it would be great practice analyzing team statistics while using the skills that I have learned in R.</description>
     </item>
     
     <item>
-      <title>Resume</title>
-      <link>/resume/</link>
+      <title>Project 2: Modeling, Testing, and Predicting</title>
+      <link>/project/project2/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/resume/</guid>
-      <description>    </description>
+      <guid>/project/project2/</guid>
+      <description>#0:Data Set
+For the purpose of this project, I used an official dataset used on Medicare.gov for hospital quality comparison which showed hospital ratings. This data set was obtained from Kaggle.com and the Centers for Medicare and Medicaid. This data set contained 8 different variables, including: Hospital Name (Categorical), State (Categorical), Zip Code (numerical), Hospital Type; Acute, Critical, or Children’s Hosp. (Categorical), Ownership of Hospital;Voluntary Non Profit, Proprietary, or Government Owned (Categorical), Emergency Services Available; Yes=1/No=2 (Binary Numerical), Hospital Rating; Scale of 1-5 (Numerical), and Average Amount of Nights Spent by Patients (Numerical).</description>
     </item>
     
   </channel>

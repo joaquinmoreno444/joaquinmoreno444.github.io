@@ -7,7 +7,7 @@
     <meta name="author" content="Joaquin Moreno" />
     
     <link rel="shortcut icon" type="image/x-icon" href="../../img/favicon.ico">
-    <title>Project 2</title>
+    <title>Project 2: Modeling, Testing, and Predicting</title>
     <meta name="generator" content="Hugo 0.83.1" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="../../css/main.css" />
@@ -54,13 +54,13 @@
       <div class="container">
         <div class="blog-post">
           <h3>
-            <strong><a href="../../project/project2/">Project 2</a></strong>
+            <strong><a href="../../project/project2/">Project 2: Modeling, Testing, and Predicting</a></strong>
           </h3>
         </div>
  
 <div class="blog-title">
           <h4>
-         December 1, 2020 
+         January 1, 0001 
             &nbsp;&nbsp;
             
           </h4>
@@ -72,9 +72,441 @@
               
 
 
-<div id="test-project-2" class="section level2">
-<h2>Test Project 2</h2>
-</div>
+<p>#0:Data Set</p>
+<p>For the purpose of this project, I used an official dataset used on Medicare.gov for hospital quality comparison which showed hospital ratings. This data set was obtained from Kaggle.com and the Centers for Medicare and Medicaid. This data set contained 8 different variables, including: Hospital Name (Categorical), State (Categorical), Zip Code (numerical), Hospital Type; Acute, Critical, or Children’s Hosp. (Categorical), Ownership of Hospital;Voluntary Non Profit, Proprietary, or Government Owned (Categorical), Emergency Services Available; Yes=1/No=2 (Binary Numerical), Hospital Rating; Scale of 1-5 (Numerical), and Average Amount of Nights Spent by Patients (Numerical). Overall, these variables allowed me to analyze statistical trends.</p>
+<p>#1:MANOVA/ANOVA Testing</p>
+<pre class="r"><code>library(AER)</code></pre>
+<pre><code>## Loading required package: car</code></pre>
+<pre><code>## Loading required package: carData</code></pre>
+<pre><code>## Loading required package: lmtest</code></pre>
+<pre><code>## Loading required package: zoo</code></pre>
+<pre><code>## 
+## Attaching package: &#39;zoo&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     as.Date, as.Date.numeric</code></pre>
+<pre><code>## Loading required package: sandwich</code></pre>
+<pre><code>## Loading required package: survival</code></pre>
+<pre class="r"><code>datap&lt;- read.csv(&quot;dataset.csv&quot;, 
+                  header = TRUE, 
+                   quote=&quot;\&quot;&quot;, 
+                  stringsAsFactors= TRUE, 
+                 strip.white = TRUE)
+data.frame(datap)</code></pre>
+<pre><code>##                                                 Name State   ZIP      Type
+## 1                   SOUTHEAST ALABAMA MEDICAL CENTER    AL 36301     Acute
+## 2                      MARSHALL MEDICAL CENTER SOUTH    AL 35957     Acute
+## 3                     ELIZA COFFEE MEMORIAL HOSPITAL    AL 35631     Acute
+## 4                           MIZELL MEMORIAL HOSPITAL    AL 36467  Critical
+## 5                        CRENSHAW COMMUNITY HOSPITAL    AL 36049  Critical
+## 6                   PROVIDENCE ALASKA MEDICAL CENTER    AK 99508     Acute
+## 7                     MAT-SU REGIONAL MEDICAL CENTER    AK 99645  Critical
+## 8                         BARTLETT REGIONAL HOSPITAL    AK 99801     Acute
+## 9                        FAIRBANKS MEMORIAL HOSPITAL    AK 99701  Critical
+## 10                          ALASKA REGIONAL HOSPITAL    AK 99508  Critical
+## 11                            ABRAZO MARYVALE CAMPUS    AZ 85031  Critical
+## 12        BANNER - UNIVERSITY MEDICAL CENTER PHOENIX    AZ 85006     Acute
+## 13                             TUCSON MEDICAL CENTER    AZ 85712  Critical
+## 14                       VERDE VALLEY MEDICAL CENTER    AZ 86326     Acute
+## 15                               ST. MARY&#39;S HOSPITAL    AZ 85745     Acute
+## 16                                  ST ROSE HOSPITAL    CA 94545     Acute
+## 17                                ST JOSEPH HOSPITAL    CA 95501     Acute
+## 18                    MILLS-PENINSULA MEDICAL CENTER    CA 94010  Critical
+## 19 CALIFORNIA PACIFIC MEDICAL CTR-DAVIES CAMPUS HOSP    CA 94117  Critical
+## 20                QUEEN OF THE VALLEY MEDICAL CENTER    CA 94558     Acute
+## 21                     NORTH COLORADO MEDICAL CENTER    CO 80631     Acute
+## 22                          LONGMONT UNITED HOSPITAL    CO 80501  Critical
+## 23                      PLATTE VALLEY MEDICAL CENTER    CO 80601     Acute
+## 24                        MONTROSE MEMORIAL HOSPITAL    CO 81401     Acute
+## 25                            SAN LUIS VALLEY HEALTH    CO 81101     Acute
+## 26                            UF HEALTH JACKSONVILLE    FL 32209  Critical
+## 27                            BETHESDA HOSPITAL EAST    FL 33435  Critical
+## 28                                    ORLANDO HEALTH    FL 32806     Acute
+## 29                                  FLORIDA HOSPITAL    FL 32803 Childrens
+## 30                         BAPTIST HOSPITAL OF MIAMI    FL 33176  Critical
+## 31                           HAMILTON MEDICAL CENTER    GA 30720 Childrens
+## 32                     UPSON REGIONAL MEDICAL CENTER    GA 30286  Critical
+## 33        MAYO CLINIC HEALTH SYSTEM IN WAYCROSS, INC    GA 31501     Acute
+## 34                        NORTHSIDE HOSPITAL FORSYTH    GA 30041  Critical
+## 35                                ST MARY&#39;S HOSPITAL    GA 30606  Critical
+## 36                         THE QUEENS MEDICAL CENTER    HI 96813     Acute
+## 37                      MAUI MEMORIAL MEDICAL CENTER    HI 96793     Acute
+## 38                          WAHIAWA GENERAL HOSPITAL    HI 96786  Critical
+## 39                               HILO MEDICAL CENTER    HI 96720  Critical
+## 40                             CASTLE MEDICAL CENTER    HI 96734     Acute
+##               Ownership ER Rating Nights
+## 1            Government  1      3      4
+## 2            Government  0      3      5
+## 3            Government  0      2      3
+## 4  Voluntary non-profit  0      2      4
+## 5           Proprietary  1      3      3
+## 6  Voluntary non-profit  0      3      4
+## 7  Voluntary non-profit  1      3      4
+## 8            Government  0      3      4
+## 9  Voluntary non-profit  1      3      5
+## 10          Proprietary  1      3      5
+## 11          Proprietary  0      2      4
+## 12 Voluntary non-profit  1      3      5
+## 13 Voluntary non-profit  0      3      4
+## 14 Voluntary non-profit  0      4      6
+## 15 Voluntary non-profit  1      3      5
+## 16 Voluntary non-profit  1      1      6
+## 17 Voluntary non-profit  1      3      5
+## 18 Voluntary non-profit  0      4      5
+## 19 Voluntary non-profit  0      3      5
+## 20 Voluntary non-profit  0      3      5
+## 21 Voluntary non-profit  1      4      5
+## 22 Voluntary non-profit  1      3      5
+## 23 Voluntary non-profit  0      3      3
+## 24 Voluntary non-profit  0      4      5
+## 25 Voluntary non-profit  0      3      5
+## 26 Voluntary non-profit  0      1      4
+## 27 Voluntary non-profit  1      3      5
+## 28 Voluntary non-profit  0      3      6
+## 29 Voluntary non-profit  1      2      7
+## 30 Voluntary non-profit  1      3      5
+## 31 Voluntary non-profit  1      4      7
+## 32 Voluntary non-profit  1      3      5
+## 33 Voluntary non-profit  0      3      3
+## 34 Voluntary non-profit  0      3      3
+## 35 Voluntary non-profit  0      4      4
+## 36 Voluntary non-profit  1      4      6
+## 37           Government  0      3      5
+## 38 Voluntary non-profit  1      2      5
+## 39           Government  0      4      6
+## 40 Voluntary non-profit  0      3      5</code></pre>
+<pre class="r"><code>man1&lt;-manova(cbind(Rating,Nights)~ZIP, data=datap)
+summary(man1)</code></pre>
+<pre><code>##           Df   Pillai approx F num Df den Df Pr(&gt;F)
+## ZIP        1 0.044111  0.85371      2     37 0.4341
+## Residuals 38</code></pre>
+<pre class="r"><code>summary.aov(man1)</code></pre>
+<pre><code>##  Response Rating :
+##             Df  Sum Sq Mean Sq F value Pr(&gt;F)
+## ZIP          1  0.4833 0.48328  0.8962 0.3498
+## Residuals   38 20.4917 0.53926               
+## 
+##  Response Nights :
+##             Df Sum Sq Mean Sq F value Pr(&gt;F)
+## ZIP          1  1.176  1.1761  1.1661  0.287
+## Residuals   38 38.324  1.0085</code></pre>
+<pre class="r"><code>pairwise.t.test(datap$Rating,datap$Nights, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  datap$Rating and datap$Nights 
+## 
+##   3    4    5    6   
+## 4 0.75 -    -    -   
+## 5 0.42 0.15 -    -   
+## 6 0.40 0.21 0.80 -   
+## 7 0.75 0.57 0.85 0.75
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(datap$ER,datap$Rating, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  datap$ER and datap$Rating 
+## 
+##   1    2    3   
+## 2 0.82 -    -   
+## 3 0.96 0.76 -   
+## 4 0.76 0.93 0.62
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>library(rstatix)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;rstatix&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     filter</code></pre>
+<pre class="r"><code>group&lt;- datap$ER
+DVs&lt;- datap %&gt;% select(Rating,Nights)
+sapply(split(DVs,group), mshapiro_test)</code></pre>
+<pre><code>##           0         1          
+## statistic 0.9388384 0.8022437  
+## p.value   0.1872916 0.001634151</code></pre>
+<p>For this section, I performed five different statistical tests which included a MANOVA, two ANOVAs, and two t-tests. From the first MANOVA test, I was not able to obtain statistically significant differences between the hospitals. The Pillai value = 0.044111, the F value = 0.85371, and p value = 0.4341. There were two additional univariate ANOVA tests performed in order to determine the mean differences between the two data sets. For the Hospital Rating ANOVA test, I obtained an F value = 0.8962, and P-value = 0.3498. Additionally, I also ran a univariate ANOVA test on the ‘Nights’ variable, which showed the average amount of nights a patient spent at each respective hospitals. The statistics obtained for this test included, F value = 1.1661 and P-value= 0.287. The pairwise comparison tests, also known as t-tests, were conducted in order to determine the difference in values. The alpha value was adjusted with the Bonferroni method in order to avoid a Type I error. The p-value for Hospital Rating was &lt; 0.05, indicating that the main assumptions are actually violated.</p>
+<p>#2: Randomization test</p>
+<pre class="r"><code>library(vegan)</code></pre>
+<pre><code>## Loading required package: permute</code></pre>
+<pre><code>## Loading required package: lattice</code></pre>
+<pre><code>## This is vegan 2.5-7</code></pre>
+<pre class="r"><code>library(plyr)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;plyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:rstatix&#39;:
+## 
+##     desc, mutate</code></pre>
+<pre class="r"><code>ddply(datap, &quot;Rating&quot;, plyr::summarize, mean_Nights = mean(datap$Nights))</code></pre>
+<pre><code>##   Rating mean_Nights
+## 1      1        4.75
+## 2      2        4.75
+## 3      3        4.75
+## 4      4        4.75</code></pre>
+<pre class="r"><code>datap %&gt;% group_by(Rating) %&gt;% summarize(means = mean(Nights)) %&gt;% summarize(mean_diff = diff(means))</code></pre>
+<pre><code>## [1] mean_diff
+## &lt;0 rows&gt; (or 0-length row.names)</code></pre>
+<pre class="r"><code>x1&lt;- datap$Rating
+y1&lt;- datap$Nights
+x2&lt;- datap$ZIP
+
+cor(x1,y1, method= &quot;pearson&quot;)</code></pre>
+<pre><code>## [1] 0.1997645</code></pre>
+<pre class="r"><code>library(vegan)
+dists &lt;- datap %&gt;% select(Rating, Nights, ZIP) %&gt;% dist
+adonis(dists~ER, data=datap)</code></pre>
+<pre><code>## 
+## Call:
+## adonis(formula = dists ~ ER, data = datap) 
+## 
+## Permutation: free
+## Number of permutations: 999
+## 
+## Terms added sequentially (first to last)
+## 
+##           Df  SumsOfSqs   MeanSqs   F.Model      R2 Pr(&gt;F)
+## ER         1 3.6368e+06   3636792 0.0041662 0.00011  0.956
+## Residuals 38 3.3171e+10 872929147           0.99989       
+## Total     39 3.3175e+10                     1.00000</code></pre>
+<pre class="r"><code>#Observed F
+
+library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>## ✓ ggplot2 3.3.3     ✓ purrr   0.3.4
+## ✓ tibble  3.0.4     ✓ dplyr   1.0.2
+## ✓ tidyr   1.1.2     ✓ stringr 1.4.0
+## ✓ readr   1.4.0     ✓ forcats 0.5.0</code></pre>
+<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::arrange()   masks plyr::arrange()
+## x purrr::compact()   masks plyr::compact()
+## x dplyr::count()     masks plyr::count()
+## x dplyr::failwith()  masks plyr::failwith()
+## x dplyr::filter()    masks rstatix::filter(), stats::filter()
+## x dplyr::id()        masks plyr::id()
+## x dplyr::lag()       masks stats::lag()
+## x dplyr::mutate()    masks plyr::mutate(), rstatix::mutate()
+## x dplyr::recode()    masks car::recode()
+## x dplyr::rename()    masks plyr::rename()
+## x purrr::some()      masks car::some()
+## x dplyr::summarise() masks plyr::summarise()
+## x dplyr::summarize() masks plyr::summarize()</code></pre>
+<pre class="r"><code>SST&lt;- sum(dists^2)/200
+SSW&lt;- datap %&gt;%group_by(datap$Rating)%&gt;%select(Rating, Nights, ZIP, ER) %&gt;%
+do(d=dist(.[-1],&quot;euclidean&quot;))%&gt;%ungroup()%&gt;% summarize(sum(d[[1]]^2)/92 + sum(d[[2]]^2)/108)</code></pre>
+<pre><code>## Adding missing grouping variables: `datap$Rating`</code></pre>
+<pre class="r"><code>F_obs&lt;-((SST-SSW)/1)/(SSW/198) #observed F statistic
+#Fs&lt;-replicate(1000,
+#new &lt;- datap %&gt;%mutate(Rating=sample(Rating))
+
+#PERMUTATION
+#SSW &lt;- new%&gt;% group_by(Rating) %&gt;% select(Rating,Nights, ZIP, ER) %&gt;%
+#do(d=dist(.[-1],&quot;euclidean&quot;)) %&gt;% ungroup() %&gt;%
+#summarize(sum(d[[1]]^2)/92 + sum(d[[2]]^2)/108)
+#((SST-SSW)/1)/(SSW/198)
+#Would not let me knit :(</code></pre>
+<p>I was able to employ a Pearson correlation test in order to determine a relationship between Hospital Rating and amount of Nights spent, on average, by a patient. The correlation value = 0.1998, compared to HO:Rating will not have a strong correlation to average amount of nights spent by patients in the hospital, ZIP code, or if the hospital provides ER Services. HA: Rating will have a strong correlation to the average amount of nights spent by patients in the hospital, ZIP code, or if the hospital provides ER services.</p>
+<p>#3: Linear Regression Model</p>
+<pre class="r"><code>library(ggplot2)
+datap$Rating&lt;- datap$Rating - mean(datap$Rating)
+datap$Nights&lt;- datap$Nights - mean(datap$Nights)
+
+fit1&lt;- lm(Nights ~ ER*Rating, data= datap)
+summary(fit1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Nights ~ ER * Rating, data = datap)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -2.1056 -0.4546 -0.1056  0.5454  1.9938 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept)  -0.3100     0.1981  -1.565   0.1264  
+## ER            0.6681     0.2954   2.261   0.0299 *
+## Rating        0.5833     0.2681   2.175   0.0362 *
+## ER:Rating    -0.6827     0.4103  -1.664   0.1048  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.9289 on 36 degrees of freedom
+## Multiple R-squared:  0.2137, Adjusted R-squared:  0.1481 
+## F-statistic:  3.26 on 3 and 36 DF,  p-value: 0.03252</code></pre>
+<pre class="r"><code>coef(fit1)</code></pre>
+<pre><code>## (Intercept)          ER      Rating   ER:Rating 
+##  -0.3100379   0.6681124   0.5833333  -0.6827122</code></pre>
+<pre class="r"><code>datap %&gt;% ggplot(aes(Rating,Nights))+geom_point()+geom_smooth(method = &#39;lm&#39;, se=F)</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="../../project/Project2_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>cor(datap$Rating, datap$Nights)</code></pre>
+<pre><code>## [1] 0.1997645</code></pre>
+<pre class="r"><code>res&lt;- fit1$residuals
+fitval&lt;- fit1$fitted.values
+
+ggplot()+geom_point(aes(fitval,res))+geom_hline(yintercept = 0, color = &#39;blue&#39;)</code></pre>
+<p><img src="../../project/Project2_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
+<pre class="r"><code>ggplot()+geom_histogram(aes(res))</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="../../project/Project2_files/figure-html/unnamed-chunk-3-3.png" width="672" /></p>
+<pre class="r"><code>ggplot()+geom_qq(aes(sample=res))+geom_qq()</code></pre>
+<p><img src="../../project/Project2_files/figure-html/unnamed-chunk-3-4.png" width="672" /></p>
+<pre class="r"><code>coeftest(fit1)[,1:2]</code></pre>
+<pre><code>##               Estimate Std. Error
+## (Intercept) -0.3100379  0.1981488
+## ER           0.6681124  0.2954422
+## Rating       0.5833333  0.2681411
+## ER:Rating   -0.6827122  0.4103186</code></pre>
+<pre class="r"><code>coeftest(fit1, vcov=vcovHC(fit1))[,1:2]</code></pre>
+<pre><code>##               Estimate Std. Error
+## (Intercept) -0.3100379  0.1952463
+## ER           0.6681124  0.3241487
+## Rating       0.5833333  0.2656524
+## ER:Rating   -0.6827122  0.5556209</code></pre>
+<pre class="r"><code>fit&lt;- lm(Rating~Nights, data=datap)
+SST&lt;- sum((datap$Rating-mean(datap$Rating))^2)
+SSR&lt;- sum((fit$fitted.values-mean(datap$Rating))^2)
+SSE&lt;- sum(fit$residuals^2)
+
+SSR/SST</code></pre>
+<pre><code>## [1] 0.03990586</code></pre>
+<p>#4: Regression Model with bootstrapped std error</p>
+<pre class="r"><code>library(&quot;dplyr&quot;)
+
+samp_ditn&lt;- replicate(5000, {
+  boot_dat&lt;-boot_dat&lt;-datap[sample(nrow(datap),replace = TRUE),]
+  fit&lt;- lm(datap$Rating~ datap$Nights* datap$ZIP, data= boot_dat)
+  coef(fit)
+  })
+
+# SE Estimate
+
+samp_ditn%&gt;%t%&gt;%as.data.frame%&gt;%summarize_all(sd)</code></pre>
+<pre><code>##   (Intercept) datap$Nights datap$ZIP datap$Nights:datap$ZIP
+## 1           0            0         0                      0</code></pre>
+<pre class="r"><code>samp_ditn %&gt;% t %&gt;% as.data.frame %&gt;% pivot_longer(1:3) %&gt;% group_by(datap$Hospital) %&gt;% summarize(lower=quantile(value,.025), upper=quantile(value,.975))</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##    lower  upper
+##    &lt;dbl&gt;  &lt;dbl&gt;
+## 1 -0.212 0.0802</code></pre>
+<p>Interestingly enough, after performing statistical tests the results showed equal SE values.</p>
+<p>#5: Logistic Regression Model</p>
+<pre class="r"><code>library(tidyverse)
+library(lmtest)
+library(plotROC)
+data1&lt;- datap%&gt;%mutate(y=ifelse(ER==&quot;Yes&quot;,0,1))
+head(data1)</code></pre>
+<pre><code>##                               Name State   ZIP     Type            Ownership ER
+## 1 SOUTHEAST ALABAMA MEDICAL CENTER    AL 36301    Acute           Government  1
+## 2    MARSHALL MEDICAL CENTER SOUTH    AL 35957    Acute           Government  0
+## 3   ELIZA COFFEE MEMORIAL HOSPITAL    AL 35631    Acute           Government  0
+## 4         MIZELL MEMORIAL HOSPITAL    AL 36467 Critical Voluntary non-profit  0
+## 5      CRENSHAW COMMUNITY HOSPITAL    AL 36049 Critical          Proprietary  1
+## 6 PROVIDENCE ALASKA MEDICAL CENTER    AK 99508    Acute Voluntary non-profit  0
+##   Rating Nights y
+## 1  0.025  -0.75 1
+## 2  0.025   0.25 1
+## 3 -0.975  -1.75 1
+## 4 -0.975  -0.75 1
+## 5  0.025  -1.75 1
+## 6  0.025  -0.75 1</code></pre>
+<pre class="r"><code>fit2&lt;-glm(y~ ER,data=data1,family=binomial(link=&quot;logit&quot;))
+coeftest(fit2)</code></pre>
+<pre><code>## 
+## z test of coefficients:
+## 
+##               Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) 2.6566e+01 7.5926e+04   3e-04   0.9997
+## ER          4.6229e-06 1.1318e+05   0e+00   1.0000</code></pre>
+<pre class="r"><code>exp(coef(fit2))</code></pre>
+<pre><code>##  (Intercept)           ER 
+## 3.447428e+11 1.000005e+00</code></pre>
+<pre class="r"><code>logistic&lt;-function(x){exp(x)/(1+exp(x))}
+
+#Confusion Matrix
+table(truth=datap$ER, prediction=datap$Rating&gt;1)%&gt;%addmargins</code></pre>
+<pre><code>##      prediction
+## truth FALSE TRUE Sum
+##   0      17    5  22
+##   1      15    3  18
+##   Sum    32    8  40</code></pre>
+<pre class="r"><code>#Accuracy
+(15+5)/40</code></pre>
+<pre><code>## [1] 0.5</code></pre>
+<pre class="r"><code>#TPR Sensitivity
+15/18</code></pre>
+<pre><code>## [1] 0.8333333</code></pre>
+<pre class="r"><code>#TNR Specificity
+5/22</code></pre>
+<pre><code>## [1] 0.2272727</code></pre>
+<pre class="r"><code>#PPV Precision
+15/32</code></pre>
+<pre><code>## [1] 0.46875</code></pre>
+<pre class="r"><code>#AUC
+widths&lt;-diff(datap$y)
+heights&lt;-vector()
+#for(i in 1:100) heights[i]&lt;-datap$y[i]+datap$y[i+1]
+AUC&lt;-sum(heights*widths/2)
+AUC%&gt;%round(3)</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>#density plot
+datap$logit&lt;-predict(fit2,type=&quot;link&quot;)
+datap%&gt;%ggplot()+geom_density(aes(logit,color=Rating,fill=Rating), alpha=.4)+ theme(legend.position=c(.3,.6))+geom_vline(xintercept=2)+xlab(&quot;logit (log-odds)&quot;)+geom_rug(aes(logit,color=Rating))</code></pre>
+<p><img src="../../project/Project2_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>#ROC
+library(plotROC)
+ROCplot&lt;-ggplot(datap)+geom_roc(aes(d=ER,m=Rating), n.cuts=0)
+ROCplot</code></pre>
+<p><img src="../../project/Project2_files/figure-html/unnamed-chunk-5-2.png" width="672" /></p>
+<pre class="r"><code>calc_auc(ROCplot)</code></pre>
+<pre><code>##   PANEL group      AUC
+## 1     1    -1 0.479798</code></pre>
+<p>From the analysis performed above, I was able to obtain a accuracy value of 0.5, TPR value = 0.8333, TNR value = 0.2273, PPV value = 0.4688, and AUC value extremely low (~0). The low AUC value indicates that the model is not reliable or extremely accurate in this specific case.</p>
+<p>#6: 2nd Logistic Regression</p>
+<pre class="r"><code>#fit model
+library(tidyverse)
+library(lmtest)
+library(pROC)</code></pre>
+<pre><code>## Type &#39;citation(&quot;pROC&quot;)&#39; for a citation.</code></pre>
+<pre><code>## 
+## Attaching package: &#39;pROC&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:plotROC&#39;:
+## 
+##     ggroc</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     cov, smooth, var</code></pre>
+<pre class="r"><code>library(glmnet)</code></pre>
+<pre><code>## Loading required package: Matrix</code></pre>
+<pre><code>## 
+## Attaching package: &#39;Matrix&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:tidyr&#39;:
+## 
+##     expand, pack, unpack</code></pre>
+<pre><code>## Loaded glmnet 4.0-2</code></pre>
+<pre class="r"><code>class_diag&lt;-function(probs,truth){
+  tab&lt;-table(factor(probs&gt;.5,levels=c(&quot;FALSE&quot;,&quot;TRUE&quot;)),truth)
+  acc=sum(diag(tab))/sum(tab)
+  sens=tab[2,2]/colSums(tab)[2]
+  spec=tab[1,1]/colSums(tab)[1]
+  ppv=tab[2,2]/rowSums(tab)[2]
+
+  if(is.numeric(truth)==FALSE &amp; is.logical(truth)==FALSE) truth&lt;-as.numeric(truth)-1 
+  ord&lt;-order(probs, decreasing=TRUE)
+  probs &lt;- probs[ord]; truth &lt;- truth[ord]
+  
+  TPR=cumsum(truth)/max(1,sum(truth)) 
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  
+  dup&lt;-c(probs[-1]&gt;=probs[-length(probs)], FALSE)
+  TPR&lt;-c(0,TPR[!dup],1); FPR&lt;-c(0,FPR[!dup],1)
+  
+  n&lt;- length(TPR)
+  auc&lt;- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+
+  data.frame(acc,sens,spec,ppv,auc)
+}</code></pre>
 
             
         <hr>         <div class="related-posts">

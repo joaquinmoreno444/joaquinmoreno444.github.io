@@ -1,6 +1,6 @@
 ---
-title: "Hello R Markdown"
-author: "Frida Gomam"
+title: "The best of both worlds (R and Python)"
+author: "Joaquin Moreno"
 date: 2015-07-23T21:13:14-05:00
 categories: ["R"]
 tags: ["R Markdown", "plot", "regression"]
@@ -10,28 +10,18 @@ tags: ["R Markdown", "plot", "regression"]
 knitr::opts_chunk$set(collapse = TRUE)
 ```
 
-# R Markdown
+#Blog
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+After developing an understanding of how to use R-studio in my Computational Biology course this semester, my peers and I had the opportunity of combining R with Python. Python is a well-known computing language, but can also be used effectively for data science purposes and computational biology.
 
-You can embed an R code chunk like this:
+In this post, I will show how Python code can actually be used inside an R script after installing some packages.
 
-```{r cars}
-summary(cars)
-fit <- lm(dist ~ speed, data = cars)
-fit
-```
+Follow along!
 
-# Including Plots
+You first want to make sure you install the necessary packages in R. For the purpose of this blog, we will use the R reticulate package.
 
-You can also embed plots. See Figure \@ref(fig:pie) for example:
 
-```{r pie, fig.cap='A fancy pie chart.', tidy=FALSE}
-par(mar = c(0, 1, 0, 1))
-pie(
-  c(280, 60, 20),
-  c('Sky', 'Sunny side of pyramid', 'Shady side of pyramid'),
-  col = c('#0292D8', '#F7EA39', '#C4B632'),
-  init.angle = -50, border = NA
-)
-```
+This package allows you to run Python code within an R script in order to remain connected between the two coding languages/platforms.
+
+Next, we will walk through an example that uses Python code to create an array of four numbers:
+

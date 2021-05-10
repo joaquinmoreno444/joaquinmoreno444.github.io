@@ -8,14 +8,14 @@
     <language>en-US</language>
     <lastBuildDate>Thu, 23 Jul 2015 21:13:14 -0500</lastBuildDate><atom:link href="/tags/regression/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Hello R Markdown</title>
-      <link>/post/2015/07/23/hello-r-markdown/</link>
+      <title>The best of both worlds (R and Python)</title>
+      <link>/post/2015/07/23/the-best-of-both-worlds-r-and-python/</link>
       <pubDate>Thu, 23 Jul 2015 21:13:14 -0500</pubDate>
       
-      <guid>/post/2015/07/23/hello-r-markdown/</guid>
-      <description>R Markdown This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
-You can embed an R code chunk like this:
-summary(cars) ## speed dist ## Min. : 4.0 Min. : 2.00 ## 1st Qu.:12.0 1st Qu.: 26.00 ## Median :15.0 Median : 36.00 ## Mean :15.4 Mean : 42.98 ## 3rd Qu.</description>
+      <guid>/post/2015/07/23/the-best-of-both-worlds-r-and-python/</guid>
+      <description>#Blog
+After developing an understanding of how to use R-studio in my Computational Biology course this semester, my peers and I had the opportunity of combining R with Python. Python is a well-known computing language, but can also be used effectively for data science purposes and computational biology.
+In this post, I will show how Python code can actually be used inside an R script after installing some packages.</description>
     </item>
     
   </channel>

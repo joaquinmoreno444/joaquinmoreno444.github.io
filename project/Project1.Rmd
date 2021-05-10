@@ -1,0 +1,168 @@
+---
+title: "Project 1: Exploratory Data Analysis by Joaquin E. Moreno (JEM5638)" 
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.align = "center",warning = F, message = F, tidy = TRUE, tidy.opts = list(width.cutoff = 60),R.options = list(max.print = 100))
+```
+
+Packages used:
+```{r}
+library(tidyverse)
+library(fivethirtyeight)
+library(dplyr)
+library(pastecs)
+library(Hmisc)
+
+```
+#Q0: Introduction and Data Sets
+```{r}
+data2019 <- read.csv("Data2019.csv",header = TRUE,quote="\"",stringsAsFactors= TRUE,
+                         strip.white = TRUE)
+
+data2018 <- read.csv("Data2018.csv",header = TRUE,quote="\"",stringsAsFactors= TRUE,
+                     strip.white = TRUE)
+```
+For the purpose of this project, I used two data sets obtained from Kaggle(link below) which included statistics about Men's NCAA Basketball tournament. I have always been a huge fan of college basketball and thought it would be great practice analyzing team statistics while using the skills that I have learned in R. The data sets used include the top 50 teams (Teams) from the 2018 and 2019 season. The variables analyzed include the team ranking for the respective year (Rank), conference the basketball team plays in (Conf), field goal shots percentage (Fieldgoals), two-point shots percentage (Twopointers), and three-point shots percentage (Threepointers). Overall, I hope to analyze these two data sets in order to make predictions based off of statistical analyses. 
+
+https://www.kaggle.com/andrewsundberg/college-basketball-dataset?select=cbb19.csv
+
+#Q2: Joining/Merging
+```{r}
+joinedbyrank<- data2018 %>%left_join(data2019,by = "Rank")
+
+joinedbyteam<- data2018 %>% left_join(data2019, by = "Teams" %>% na.omit(DT))
+
+```
+I chose to perform a left_join() in order to combine the data sets with data from 2018 and 2019 using a common "ID" of ranking and Teams. Since left_join() keeps all the rows from the first data set and adds the rows that match from the second data set, it allowed me to keep all variables. Although it created a wider data set, I was able to have the 2018 and 2019 data side-by-side in order to perform statistical analyses. It is important to note that no cases were dropped.
+
+#Q3: Wrangling
+```{r}
+#Q3(a):Using all six core dplyr functions
+
+#Using Filter
+joinedbyrank %>% filter(Rank == '1')
+joinedbyrank %>% filter(Rank == '50')
+
+joinedbyteam %>% filter(Teams == 'Gonzaga')
+
+joinedbyrank %>% filter(Rank>= 10 | Conf.x == "ACC"& Conf.y =="ACC")
+
+joinedbyrank %>% filter(str_detect(Conf.x, "ACC")) #2018
+joinedbyrank %>% filter(str_detect(Conf.x, "ACC")) #2019
+
+#Using Arrange
+joinedbyrank %>% arrange(desc(Threepointers.x)) #Best 3-pt shooting team 2018
+joinedbyrank %>% arrange(desc(Threepointers.y)) #Best 3-pt shooting team 2019
+
+#Using Select
+
+joinedbyteam %>% select(Teams,Year.x,Year.y,Fieldgoals.x,Fieldgoals.y)#Teams and respective FG (pct) in both years
+joinedbyteam %>% select(Teams,Year.x,Year.y,Twopointers.x,Twopointers.y)
+joinedbyteam %>% select(Teams,Year.x,Year.y,Threepointers.y,Threepointers.y)
+
+#Using mutate
+
+joinedbyrank%>%mutate(Rank_cat = case_when(Rank<=10~"Top 10",Rank >=40~"Bottom 10"))
+
+#Using summarize and group by
+
+by_FG <- group_by(joinedbyrank,Fieldgoals.x)
+summarise(by_FG,Shooting = mean(Fieldgoals.y, na.rm = T))
+
+#Q3(b):Creating Summary statistics
+
+joinedbyrank %>% summarise_all(n_distinct)
+joinedbyrank %>% summarise_all(mean)
+joinedbyrank %>% summarise_if(is.numeric,sd, na.rm = T)
+joinedbyrank %>% summarise_if(is.numeric, var, na.rm = T)
+joinedbyrank %>% summarise_if(is.numeric,quantile, na.rm = T)
+joinedbyrank %>% summarise_if(is.numeric,min, na.rm = T)
+joinedbyrank %>% summarise_if(is.numeric,max,na.rm = T)
+joinedbyrank %>% summarise(cor(Fieldgoals.x,Fieldgoals.y, use = "pair"))
+joinedbyteam %>% summarise(cor(Rank.x,Rank.y, use = "pair"))
+
+```
+For the wrangling section, I started by using all six core dplyr functions in order to obtain specific ouputs depending on the function used. I found the filter() function to be particularly useful to determine which teams belonged to a certain conference or when looking at the statistics from a particular team. The select() function allowed me to just look at numerical statistics, such as fieldgoals, two pointers and three pointers percentages. In order to compute the summary statistics, I used the summarise_if() function to determine mean, standard deviation, variation, quantile, min and max statistics. I found summarise_if(quantile) to be a helpful tool in order to determine the spread of statistics across a data set.Lastly, I was able to determine the correlation between fieldgoal percentage from 2018 vs 2019 using the last sumarise(cor) functions. 
+
+#Q4: Visualizations
+```{r}
+
+#Correlation heatmap of numeric variables
+statstotal<- select(joinedbyteam,Rank.x, Year.x, Fieldgoals.x, Twopointers.x, Threepointers.x,Rank.y, Year.y,Fieldgoals.y,Twopointers.y,Threepointers.y)
+
+statstotal %>% select_if(is.numeric) %>% cor(use = "pair")
+
+cormat<- statstotal %>% select_if(is.numeric) %>% cor(use = "pair")
+tidycor<- cormat %>% as.data.frame %>% rownames_to_column("Variable1")%>% 
+    pivot_longer(-1, names_to = "Variable2", values_to = "correlation")
+
+tidycor %>% ggplot(aes(Variable1, Variable2, fill = correlation)) + geom_tile() + 
+    scale_fill_gradient2(low = "white", mid = "green", 
+        high = "orange") + geom_text(aes(label = round(correlation, 
+    2)), color = "black", size = 2) + theme(axis.text.x = element_text(angle =90 , 
+    hjust = 1)) + coord_fixed()
+
+#The correlation heatmap displayed above allows for the reader to visualize correlation patterns depending on each variable from 2018 and 2019 season. A diagonal 'line' made up of squares with a correlation = 1 splits the heatmap in half since the same variables are being compared from each year. However, as you move towards the bottom right and top left corners, the correlation between two variables from different or same years is compared. 
+
+#Two more effective plots with ggplot
+
+#Sidebyside Chart w Mean
+
+joinedbyrank
+ggplot(joinedbyrank, aes(x = Rank , y = Threepointers.x)) + geom_bar(stat = "summary", position = "dodge")+ geom_errorbar(stat = "summary",position = "dodge")
+
+#The plot above displays all 50 teams from the 2018 season, ordered from the #1 ranked team to the #50 ranked team reading the x-axis from left to right. Additionally, three point shot percentage on the y-axis was included to compare it to team ranking for that specific year. The most significant finding from this plot is that top 10 ranked teams did not show a significantly greater three point shot percentage compared to the rest of the teams. In fact, the plot shows that teams ranked around #40 had a greater three point shot percentage compared to some top 10 ranked teams.
+
+
+ggplot(joinedbyrank, aes(Teams.x))+ geom_bar(aes(y=Fieldgoals.x,fill=Teams.x),stat = "summary", fun = mean)+ theme(axis.text = element_text(angle = 45,hjust = 1),legend.position = "none")
+
+#The plot above displays the field goal percentage for each team during the 2018 season. Compared to the previous plot, this plot displays the individual name of each team on the x-axis, and is comparing overall fieldgoals on the y-axis, instead of just three-point shots. This plot makes it easier for the reader to distinguish each unique university's FG % for the 2018 season.
+
+ggplot(joinedbyrank, aes(Teams.y))+ geom_bar(aes(y=Fieldgoals.y,fill=Teams.y),stat = "summary", fun = mean)+ theme(axis.text = element_text(angle = 45,hjust = 1),legend.position = "none")
+
+#The plot above displays the exact same information as the previous plot, however, teams from the 2019 season are displayed instead.
+
+#Scatterplot displaying correlation between team ranking and 3pt %
+
+ggplot(data = joinedbyrank, aes(x= Rank, y= Twopointers.x))+geom_point(size=3, aes(color= Rank))+xlab("Team Ranking")+ylab("2pt Shot %")+labs(color="Ranking")+scale_color_gradient(low = "red",high = "blue")
+
+#The scatterplot displayed above shows the correlation between two-point shot percentage and team ranking for the 2018 season. I specifically chose these variables to be represented in order to determine how increasing shot percentage differs between top ranked and lower ranked team. It is essential to point out that no weak or strong correlation was displayed and no transformations were applied to the data. 
+```
+
+
+
+#Q5: Dimensionality
+```{r}
+library(cluster)
+
+select(joinedbyrank,Fieldgoals.x,Threepointers.x,Twopointers.x)
+clust_dat <- select(joinedbyrank, Fieldgoals.x, Threepointers.x, Twopointers.x) %>% scale()
+sil_width <- vector()
+for (i in 2:10) {
+    kms <- kmeans(clust_dat, centers = i)
+    sil <- silhouette(kms$cluster, dist(clust_dat))
+    sil_width[i] <- mean(sil[, 3])
+}
+ggplot() + geom_line(aes(x = 1:10, y = sil_width)) + scale_x_continuous(name = 'k', breaks = 1:10)
+kmeans1 <- clust_dat %>% kmeans(3)
+kmeans1
+
+#For the purpose of identifying k-means/PAM clustering I used the numerical variables of fieldgoal percentage, two-point shot percentage, and three-point shot percentage from the 2018 season. In order to determine the correct amount of clusters, silhouette width indexes were employed with clusters 2 to 10. By looking at the graph included above, I was able to determine that 3 clusters were essential to use for the kmeans() functions. 
+
+kavgcluster <- clust_dat %>% as.data.frame %>% mutate(cluster = as.factor(kmeans1$cluster))
+kavgcluster
+
+kavgcluster %>% ggplot(aes(Fieldgoals.x,Twopointers.x,Threepointers.x, color= cluster)) + geom_point()
+
+library(GGally)
+ggpairs(kavgcluster, columns = 1:3, aes(color = cluster))
+
+
+
+```
+
+For the final figure displayed, nine total graphs were the output of the ggpairs() function. From analyzing the data, we can conclude that a positive, statistically significant correlation existed between 2pt shot percentage and field goal percentage in 2018, as did for 3pt shot percentage and field goal percentage. When comparing 2pt shot percentage to 3pt shot percentage for 2018, the clusters displayed a pretty strong negative correlation from each other that was statistically significant.
